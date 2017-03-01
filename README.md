@@ -1,5 +1,5 @@
 # QLearning
-An Q-learning example
+A Q-learning example
 
 source from: http://mnemstudio.org/path-finding-q-learning-tutorial.htm
 
