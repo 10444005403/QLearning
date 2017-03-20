@@ -38,11 +38,8 @@ def sigmoid(x):
 
 def prepro(I):
     """ prepro 210x160x3 uint8 frame into 6400 (80x80) 1D float vector """
-    print I.shape
     I = I[35:195]  # crop
-    print I.shape
     I = I[::2, ::2, 0]  # down sample by factor of 2
-    print I.shape
     I[I == 144] = 0  # erase background (background type 1)
     I[I == 109] = 0  # erase background (background type 2)
     I[I != 0] = 1  # everything else (paddles, ball) just set to 1
@@ -91,7 +88,7 @@ while True:
 
     if render:
         env.render()
-    time.sleep(0.1)
+    time.sleep(0)
     # preprocess the observation, set input to network to be difference image
     cur_x = prepro(observation)
     x = cur_x - prev_x if prev_x is not None else np.zeros(D)

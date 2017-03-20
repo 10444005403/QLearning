@@ -21,7 +21,7 @@ class Player(object):
     MOVE_UP = 3
 
     def __init__(self):
-        self.hidden_neuron_num = 4
+        self.hidden_neuron_num = 6
         self.input_dim = 20*20
         self.model = dict()
         self.model['W1'] = np.random.randn(self.hidden_neuron_num, self.input_dim) / \
@@ -33,7 +33,7 @@ class Player(object):
         self.game_action_counter = 0
         self.game_counter = 0
         self.game_round_counter = 0
-        self.chromosome_size = self.input_dim*self.hidden_neuron_num*self.hidden_neuron_num
+        self.chromosome_size = self.input_dim*self.hidden_neuron_num + self.hidden_neuron_num
 
     def play(self):
         """play main steps"""
@@ -180,6 +180,8 @@ class Evolver(object):
             record = stats.compile(population)
             logbook.record(evals=len(population), gen=gen, **record)
             print(logbook.stream)
+            if gen % 100 == 0:
+                pickle.dump(self.player.model, open('cmaes.pkl', 'wb'))
 
 
 if __name__ == "__main__":
@@ -189,5 +191,5 @@ if __name__ == "__main__":
     # print reward
 
     runner = Evolver()
-    runner.set_param(10)
+    runner.set_param(1000000)
     runner.run()
