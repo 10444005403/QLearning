@@ -18,9 +18,14 @@
 #             print("Episode finished after {} timesteps".format(t+1))
 #             break
 
-import numpy as np
+import logging
 
-a = np.random.randn(6, 3)
-print a
-print a[::2]
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(message)s',
+                    datefmt='%a, %d %b %Y %H:%M:%S',
+                    filename='cmaes.log',
+                    filemode='w')
+
+logging.info("ooo")
 

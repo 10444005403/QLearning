@@ -195,7 +195,7 @@ class Evolver(object):
 
         np.random.seed(64)
 
-        strategy = cma.Strategy(centroid=[5.0]*self.dim_size, sigma=5.0,
+        strategy = cma.Strategy(centroid=[1.0]*self.dim_size, sigma=1.0,
                                 lambda_=self.pop_size, stats=stats)
         toolbox.register("generate", strategy.generate, creator.Individual)
         toolbox.register("update", strategy.update)
@@ -203,6 +203,8 @@ class Evolver(object):
         halloffame = tools.HallOfFame(1)
 
         for gen in range(self.generation_num):
+
+            recorder = open('cmaes.log', 'w')
 
             # Generate a new population
             population = toolbox.generate()
@@ -221,11 +223,16 @@ class Evolver(object):
             record = stats.compile(population)
             logbook.record(evals=len(population), gen=gen, **record)
             print(logbook.stream)
+            recorder.write("PPP")
             if gen % 100 == 0:
                 pickle.dump(self.player.model, open('cmaes.pkl', 'wb'))
 
+            recorder.close()
+
 
 if __name__ == "__main__":
+
+    pass
 
     # p_1 = Player()
     # p_1.load_model("./cmaes.pkl")
