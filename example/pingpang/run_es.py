@@ -98,7 +98,11 @@ class Player(object):
 
     @staticmethod
     def sigmoid(x):
-        p = 1.0 / (1.0 + math.exp(-x))
+        p = 0
+        try:
+            p = 1.0 / (1.0 + math.exp(-x))
+        except:
+            pass
         return p
 
     @staticmethod
