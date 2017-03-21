@@ -28,8 +28,8 @@ class Player(object):
     MOVE_UP = 3
 
     def __init__(self):
-        self.hidden_neuron_num = 4
-        self.input_dim = 16*16
+        self.hidden_neuron_num = 8
+        self.input_dim = 40*40
         self.model = dict()
         self.model['W1'] = np.random.randn(self.hidden_neuron_num, self.input_dim) / \
                            np.sqrt(self.hidden_neuron_num)
@@ -109,7 +109,7 @@ class Player(object):
     def prepro(I):
         """ prepro 210x160x3 uint8 frame into 6400 (80x80) 1D float vector """
         I = I[35:195]       # crop
-        I = I[::10, ::10, 0]  # downsample by factor of 2
+        I = I[::4, ::4, 0]  # downsample by factor of 2
         I[I == 144] = 0     # erase background (background type 1)
         I[I == 109] = 0     # erase background (background type 2)
         I[I != 0] = 1       # everything else (paddles, ball) just set to 1
@@ -143,7 +143,7 @@ def get_ind_fitness(ind):
 class Evolver(object):
 
     def __init__(self):
-        self.pop_size = 100
+        self.pop_size = 1000
         self.dim_size = 0
         self.generation_num = 0
         self.player = Player()
@@ -193,7 +193,7 @@ class Evolver(object):
         toolbox = base.Toolbox()
         toolbox.register("evaluate", benchmarks.rastrigin)
 
-        np.random.seed(64)
+        np.random.seed(42)
 
         strategy = cma.Strategy(centroid=[1.0]*self.dim_size, sigma=1.0,
                                 lambda_=self.pop_size, stats=stats)
