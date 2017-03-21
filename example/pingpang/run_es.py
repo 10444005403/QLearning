@@ -26,7 +26,7 @@ class Player(object):
     MOVE_UP = 3
 
     def __init__(self):
-        self.hidden_neuron_num = 6
+        self.hidden_neuron_num = 4
         self.input_dim = 20*20
         self.model = dict()
         self.model['W1'] = np.random.randn(self.hidden_neuron_num, self.input_dim) / \
