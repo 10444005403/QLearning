@@ -67,7 +67,7 @@ class Player(object):
 
                 # transform chromosome
                 # print self.translate_w([self.model['W1'], self.model['W2']])
-                # break
+                break
 
         return reward
 
@@ -128,7 +128,7 @@ def get_ind_fitness(ind):
 class Evolver(object):
 
     def __init__(self):
-        self.pop_size = 100
+        self.pop_size = 20
         self.dim_size = 0
         self.generation_num = 0
         self.player = Player()
