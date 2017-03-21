@@ -141,7 +141,7 @@ def get_ind_fitness(ind):
 class Evolver(object):
 
     def __init__(self):
-        self.pop_size = 200
+        self.pop_size = 1000
         self.dim_size = 0
         self.generation_num = 0
         self.player = Player()
