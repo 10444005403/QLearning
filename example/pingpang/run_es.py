@@ -176,6 +176,9 @@ class Evolver(object):
 
     def run(self):
 
+        recorder = open('cmaes.log', 'w')
+        recorder.close()
+
         stats = tools.Statistics(lambda ind: ind.fitness.values)
         stats.register("avg", np.mean)
         stats.register("std", np.std)
