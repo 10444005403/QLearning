@@ -8,6 +8,7 @@ import numpy as np
 import cPickle as pickle
 import gym
 import time
+import math
 import logging
 from deap import algorithms
 from deap import base
@@ -16,6 +17,7 @@ from deap import cma
 from deap import creator
 from deap import tools
 from gym.envs.registration import logger
+
 
 logger.setLevel(logging.ERROR)
 
@@ -26,7 +28,7 @@ class Player(object):
     MOVE_UP = 3
 
     def __init__(self):
-        self.hidden_neuron_num = 4
+        self.hidden_neuron_num = 8
         self.input_dim = 20*20
         self.model = dict()
         self.model['W1'] = np.random.randn(self.hidden_neuron_num, self.input_dim) / \
@@ -96,11 +98,7 @@ class Player(object):
 
     @staticmethod
     def sigmoid(x):
-        p = 0
-        try:
-            p = 1.0 / (1.0 + np.exp(-x))
-        except:
-            pass
+        p = 1.0 / (1.0 + math.exp(-x))
         return p
 
     @staticmethod
@@ -141,7 +139,7 @@ def get_ind_fitness(ind):
 class Evolver(object):
 
     def __init__(self):
-        self.pop_size = 1000
+        self.pop_size = 100
         self.dim_size = 0
         self.generation_num = 0
         self.player = Player()
