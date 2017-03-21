@@ -96,7 +96,12 @@ class Player(object):
 
     @staticmethod
     def sigmoid(x):
-        return 1.0 / (1.0 + np.exp(-x))
+        p = 0
+        try:
+            p = 1.0 / (1.0 + np.exp(-x))
+        except:
+            pass
+        return p
 
     @staticmethod
     def prepro(I):
