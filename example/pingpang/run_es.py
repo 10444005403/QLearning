@@ -204,8 +204,6 @@ class Evolver(object):
 
         for gen in range(self.generation_num):
 
-            recorder = open('cmaes.log', 'w')
-
             # Generate a new population
             population = toolbox.generate()
 
@@ -222,17 +220,25 @@ class Evolver(object):
             halloffame.update(population)
             record = stats.compile(population)
             logbook.record(evals=len(population), gen=gen, **record)
-            print(logbook.stream)
-            recorder.write("PPP")
+
+            record_line = str(logbook.stream)
+            print record_line
+            recorder = open('cmaes.log', 'a')
+            recorder.write(record_line + "\n")
+            recorder.close()
+
             if gen % 100 == 0:
                 pickle.dump(self.player.model, open('cmaes.pkl', 'wb'))
-
-            recorder.close()
 
 
 if __name__ == "__main__":
 
-    pass
+    # print "start"
+    # file_object = open('cmaes.log', 'a')
+    # file_object.write("PPP")
+    # file_object.flush()
+    # file_object.close()
+    # print "end"
 
     # p_1 = Player()
     # p_1.load_model("./cmaes.pkl")

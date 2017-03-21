@@ -5,27 +5,18 @@
 # Licensed under the Dada tech.co.ltd - http://www.imdada.cn
 
 
-# import gym
-# env = gym.make('CartPole-v0')
-# for i_episode in range(20):
-#     observation = env.reset()
-#     for t in range(100):
-#         env.render()
-#         print(observation)
-#         action = env.action_space.sample()
-#         observation, reward, done, info = env.step(action)
-#         if done:
-#             print("Episode finished after {} timesteps".format(t+1))
-#             break
-
-import logging
+import gym
+env = gym.make('CartPole-v0')
+for i_episode in range(20):
+    observation = env.reset()
+    for t in range(100):
+        env.render()
+        print(observation)
+        action = env.action_space.sample()
+        observation, reward, done, info = env.step(action)
+        if done:
+            print("Episode finished after {} timesteps".format(t+1))
+            break
 
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s %(message)s',
-                    datefmt='%a, %d %b %Y %H:%M:%S',
-                    filename='cmaes.log',
-                    filemode='w')
-
-logging.info("ooo")
 
