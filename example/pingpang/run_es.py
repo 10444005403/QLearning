@@ -3,6 +3,7 @@
 #
 # Copyright (C) 2017 xuekun.zhuang <zhuangxuekun@imdada.cn>
 # Licensed under the Dada tech.co.ltd - http://www.imdada.cn
+import multiprocessing
 import numpy as np
 import cPickle as pickle
 import gym
@@ -21,7 +22,7 @@ class Player(object):
     MOVE_UP = 3
 
     def __init__(self):
-        self.hidden_neuron_num = 6
+        self.hidden_neuron_num = 2
         self.input_dim = 20*20
         self.model = dict()
         self.model['W1'] = np.random.randn(self.hidden_neuron_num, self.input_dim) / \
@@ -66,7 +67,7 @@ class Player(object):
 
                 # transform chromosome
                 # print self.translate_w([self.model['W1'], self.model['W2']])
-                break
+                # break
 
         return reward
 
@@ -110,10 +111,24 @@ class Player(object):
         p = self.sigmoid(logp)
         return p, h         # return probability of taking action 2, and hidden state
 
+    def load_model(self, model_file):
+        self.model = pickle.load(open(model_file, 'rb'))
+
+
+def get_ind_fitness(ind):
+    player = Player()
+    w_trans = player.translate_chromosome(ind, [(player.hidden_neuron_num,
+                                                 player.input_dim),
+                                                (1, player.hidden_neuron_num)])
+    player.model['W1'] = w_trans[0]
+    player.model['W2'] = w_trans[1]
+    return player.play(),
+
 
 class Evolver(object):
 
     def __init__(self):
+        self.pop_size = 100
         self.dim_size = 0
         self.generation_num = 0
         self.player = Player()
@@ -131,6 +146,16 @@ class Evolver(object):
             self.player.model['W1'] = w_trans[0]
             self.player.model['W2'] = w_trans[1]
             fitnesses.append((self.player.play(),))
+        return fitnesses
+
+    def get_fitness_multi_process(self, population):
+        fitnesses = []
+        pool = multiprocessing.Pool(processes=10)
+        for ind in population:
+            fitnesses.append(pool.apply_async(get_ind_fitness, (ind,)))
+        pool.close()
+        pool.join()
+        fitnesses = [f.get() for f in fitnesses]
         return fitnesses
 
     def run(self):
@@ -155,7 +180,7 @@ class Evolver(object):
         np.random.seed(64)
 
         strategy = cma.Strategy(centroid=[5.0]*self.dim_size, sigma=5.0,
-                                lambda_=200, stats=stats)
+                                lambda_=self.pop_size, stats=stats)
         toolbox.register("generate", strategy.generate, creator.Individual)
         toolbox.register("update", strategy.update)
 
@@ -167,7 +192,7 @@ class Evolver(object):
             population = toolbox.generate()
 
             # Evaluate the individuals
-            fitnesses = self.get_fitness(population)
+            fitnesses = self.get_fitness_multi_process(population)
             for ind, fit in zip(population, fitnesses):
                 ind.fitness.values = fit
 
@@ -187,6 +212,7 @@ class Evolver(object):
 if __name__ == "__main__":
 
     # p_1 = Player()
+    # p_1.load_model("./cmaes.pkl")
     # reward = p_1.play()
     # print reward
 
