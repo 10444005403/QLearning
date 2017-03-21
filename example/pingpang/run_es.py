@@ -28,8 +28,8 @@ class Player(object):
     MOVE_UP = 3
 
     def __init__(self):
-        self.hidden_neuron_num = 8
-        self.input_dim = 20*20
+        self.hidden_neuron_num = 4
+        self.input_dim = 16*16
         self.model = dict()
         self.model['W1'] = np.random.randn(self.hidden_neuron_num, self.input_dim) / \
                            np.sqrt(self.hidden_neuron_num)
@@ -105,7 +105,7 @@ class Player(object):
     def prepro(I):
         """ prepro 210x160x3 uint8 frame into 6400 (80x80) 1D float vector """
         I = I[35:195]       # crop
-        I = I[::8, ::8, 0]  # downsample by factor of 2
+        I = I[::10, ::10, 0]  # downsample by factor of 2
         I[I == 144] = 0     # erase background (background type 1)
         I[I == 109] = 0     # erase background (background type 2)
         I[I != 0] = 1       # everything else (paddles, ball) just set to 1
