@@ -8,12 +8,16 @@ import numpy as np
 import cPickle as pickle
 import gym
 import time
+import logging
 from deap import algorithms
 from deap import base
 from deap import benchmarks
 from deap import cma
 from deap import creator
 from deap import tools
+from gym.envs.registration import logger
+
+logger.setLevel(logging.ERROR)
 
 
 class Player(object):
@@ -22,7 +26,7 @@ class Player(object):
     MOVE_UP = 3
 
     def __init__(self):
-        self.hidden_neuron_num = 2
+        self.hidden_neuron_num = 6
         self.input_dim = 20*20
         self.model = dict()
         self.model['W1'] = np.random.randn(self.hidden_neuron_num, self.input_dim) / \
@@ -115,8 +119,12 @@ class Player(object):
         self.model = pickle.load(open(model_file, 'rb'))
 
 
-def get_ind_fitness(ind):
+def init():
+    global player
     player = Player()
+
+
+def get_ind_fitness(ind):
     w_trans = player.translate_chromosome(ind, [(player.hidden_neuron_num,
                                                  player.input_dim),
                                                 (1, player.hidden_neuron_num)])
@@ -128,7 +136,7 @@ def get_ind_fitness(ind):
 class Evolver(object):
 
     def __init__(self):
-        self.pop_size = 20
+        self.pop_size = 200
         self.dim_size = 0
         self.generation_num = 0
         self.player = Player()
@@ -148,9 +156,10 @@ class Evolver(object):
             fitnesses.append((self.player.play(),))
         return fitnesses
 
-    def get_fitness_multi_process(self, population):
+    @staticmethod
+    def get_fitness_multi_process(population):
+        pool = multiprocessing.Pool(processes=10, initializer=init)
         fitnesses = []
-        pool = multiprocessing.Pool(processes=10)
         for ind in population:
             fitnesses.append(pool.apply_async(get_ind_fitness, (ind,)))
         pool.close()
@@ -169,7 +178,7 @@ class Evolver(object):
 
         logbook = tools.Logbook()
         logbook.header = "gen", "evals", "std", "min", "avg", "max", "win"
-        print self.dim_size
+        print "dim_size: %d " % self.dim_size
 
         creator.create("FitnessMin", base.Fitness, weights=(1.0,))
         creator.create("Individual", list, fitness=creator.FitnessMin)
